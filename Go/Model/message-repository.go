@@ -3,7 +3,7 @@
 	modelパッケージ。メッセージの構造定義と生成を行う。
 */
 
-package model
+package Model
 
 import (
 	"time"

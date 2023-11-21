@@ -3,7 +3,7 @@
 	repositoryパッケージ。メッセージの保管を行う。
 */
 
-package repository
+package Repository
 
 type MessageRepository interface {
 	Save(msg string) error   // 保管されているメッセージ

@@ -3,7 +3,7 @@
 	infraパッケージ。メッセージの永続化を行う。
 */
 
-package infra
+package Infra
 
 /*import (
 	"github.com/aki2772/MessageBoard_sample/tree/development/Go/Repository"
