@@ -9,6 +9,3 @@ type MessageRepository interface {
 	Save(msg string) error        // 保管されているメッセージ
 	List(msgs []string, er error) // 保管されているメッセージのリスト
 }
-
-type Repository struct {
-}
