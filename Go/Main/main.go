@@ -1,3 +1,4 @@
+
 /*
 	Created by Kobayashi Atsuki.
 	メインパッケージ。ユーザーの入力を受け取り、メッセージを保管する。
