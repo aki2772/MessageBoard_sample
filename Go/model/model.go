@@ -14,12 +14,3 @@ type Message struct {
 	Message string    // メッセージ
 	Time    time.Time // タイムスタンプ
 }
-
-// 新規メッセージの生成
-func NewMessage(name string, message string) *Message {
-	return &Message{
-		name,
-		message,
-		time.Now(),
-	}
-}
