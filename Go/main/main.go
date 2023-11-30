@@ -8,6 +8,9 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
+
+	"github.com/aki2772/MessageBoard_sample/Go/model"
 )
 
 func main() {
@@ -39,11 +42,11 @@ func New() {
 	fmt.Print("Enter message... >")
 	fmt.Scan(&message)
 
-	/*message := model.Message{
+	msgStruct := model.Message{
 		Name:    name,
 		Message: message,
 		Time:    time.Now(),
-	}*/
+	}
 
-	//fmt.Println(message)
+	fmt.Println(msgStruct)
 }
