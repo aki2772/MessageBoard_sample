@@ -6,17 +6,21 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"time"
 
+	"github.com/aki2772/MessageBoard_sample/Go/infra"
 	"github.com/aki2772/MessageBoard_sample/Go/model"
 )
 
-func main() {
+const filePath = "message.txt" // ファイルパス
 
+func main() {
 	// コマンドライン引数が2つでなければ終了
 	if len(os.Args) != 2 {
+		fmt.Println("コマンドライン引数が不正です。")
 		return
 	}
 
@@ -35,18 +39,37 @@ func List() {
 	fmt.Println("list")
 }
 
+// / <summary>
+// / 新しくメッセージを生成する。
+// / </summary>
 func New() {
-	var name, message string
-	fmt.Print("Enter your name... >")
-	fmt.Scan(&name)
-	fmt.Print("Enter message... >")
-	fmt.Scan(&message)
+	// 標準入力のスキャナー
+	nameScn := bufio.NewScanner(os.Stdin)
+	messageScn := bufio.NewScanner(os.Stdin)
 
-	msgStruct := model.Message{
-		Name:    name,
-		Message: message,
-		Time:    time.Now(),
+	fmt.Println("Enter your name...")
+	fmt.Print(">")
+	// 名前入力
+	nameScn.Scan()
+
+	fmt.Println("Enter message...")
+	fmt.Print(">")
+	// メッセージ入力
+	messageScn.Scan()
+
+	// メッセージを生成
+	msgStruct := &model.Message{
+		Name:    nameScn.Text(),    // string
+		Message: messageScn.Text(), // string
+		Time:    time.Now(),        // time.Time
 	}
 
-	fmt.Println(msgStruct)
+	fmt.Println(msgStruct.Message)
+
+	// メッセージを永続化
+	mr := infra.MessageRepository{
+		FilePath: filePath, // string
+	}
+
+	mr.Save()
 }
