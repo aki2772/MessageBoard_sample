@@ -6,6 +6,6 @@
 package repository
 
 type MessageRepository interface {
-	Save(string) // メッセージを保管する
-	List() // 保管されているメッセージのリストを引き出す
+	Save(string) string      // メッセージを保管する
+	List() ([]string, error) // 保管されているメッセージのリストを引き出す
 }

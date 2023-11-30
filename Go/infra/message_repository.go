@@ -16,7 +16,23 @@ type MessageRepository struct {
 	repository.MessageRepository        // インターフェースの埋め込み
 }
 
-func (mr MessageRepository) Save(msg string) {
-	fmt.Print(mr.FilePath)
-	fmt.Println("メッセージ保存")
+// / <summary>
+// / メッセージを保管する。
+// / </summary>
+// / <param name="message">メッセージ</param>
+// / <returns>エラー</returns>
+func (mr MessageRepository) Save(message string) string {
+	// ファイルにメッセージを書き込む
+	fmt.Println("Save")
+	return ""
+}
+
+// / <summary>
+// / 保管されているメッセージのリストを引き出す。
+// / </summary>
+// / <returns>メッセージのリスト</returns>
+func (mr MessageRepository) List() (string, error) {
+	// ファイルからメッセージを読み込む
+	fmt.Println("List")
+	return "", nil
 }
