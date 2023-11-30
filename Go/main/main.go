@@ -67,9 +67,10 @@ func New() {
 	fmt.Println(msgStruct.Message)
 
 	// メッセージを永続化
-	mr := infra.MessageRepository{
+	mrStruct := infra.MessageRepository{
 		FilePath: filePath, // string
 	}
 
-	mr.Save()
+	// エラーになる
+	fmt.Print(mrStruct.Save())
 }
