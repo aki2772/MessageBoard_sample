@@ -6,6 +6,8 @@
 package infra
 
 import (
+	"fmt"
+
 	"github.com/aki2772/MessageBoard_sample/Go/repository" // 独自パッケージ
 )
 
@@ -14,6 +16,7 @@ type MessageRepository struct {
 	repository.MessageRepository        // インターフェースの埋め込み
 }
 
-func (mr *MessageRepository) Save() {
-	// 保管されているメッセージ
+func (mr MessageRepository) Save(msg string) {
+	fmt.Print(mr.FilePath)
+	fmt.Println("メッセージ保存")
 }
