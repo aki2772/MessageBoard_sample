@@ -71,7 +71,6 @@ func New() {
 	mrStruct := infra.MessageRepository{
 		FilePath: filePath, // string
 	}
-	fmt.Println(mrStruct.FilePath)
 
 	// エラーになる
 	a := mrStruct.Save(fmt.Sprintf("%v", msgStruct))
