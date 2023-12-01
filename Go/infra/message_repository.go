@@ -21,9 +21,10 @@ type MessageRepository struct {
 // / </summary>
 // / <param name="message">メッセージ</param>
 // / <returns>エラー</returns>
-func (mr MessageRepository) Save(message string) string {
+func (mr MessageRepository) Save(msg string) string {
 	// ファイルにメッセージを書き込む
-	fmt.Println("Save")
+	fmt.Println("tmp")
+	fmt.Print(msg)
 	return ""
 }
 
