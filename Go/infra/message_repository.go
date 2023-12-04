@@ -23,7 +23,8 @@ type MessageRepository struct {
 // / <returns>エラー</returns>
 func (mr MessageRepository) Save(message string) string {
 	// ファイルにメッセージを書き込む
-	fmt.Println("A")
+	fmt.Println("Save")
+	fmt.Println("message: " + message)
 	return ""
 }
 

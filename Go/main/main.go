@@ -72,5 +72,5 @@ func New() {
 	}
 
 	// エラーになる
-	fmt.Print(mrStruct.Save(""))
+	fmt.Print(mrStruct.Save("aaa"))
 }
