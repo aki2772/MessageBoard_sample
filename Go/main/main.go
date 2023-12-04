@@ -5,7 +5,6 @@
 
 package main
 
-// Git上のimportPackageは go get [URL] で取得する必要がある。
 import (
 	"bufio"
 	"fmt"
@@ -58,7 +57,7 @@ func New() {
 	// メッセージ入力
 	messageScn.Scan()
 
-	// メッセージを
+	// メッセージを生成
 	msgStruct := &model.Message{
 		Name:    nameScn.Text(),    // string
 		Message: messageScn.Text(), // string
@@ -73,6 +72,5 @@ func New() {
 	}
 
 	// エラーになる
-	a := mrStruct.Save(fmt.Sprintf("%v", msgStruct))
-	fmt.Print(a)
+	fmt.Print(mrStruct.Save(""))
 }
