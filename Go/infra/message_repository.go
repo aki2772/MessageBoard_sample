@@ -7,8 +7,6 @@ package infra
 
 import (
 	"fmt"
-	"log"
-	"os"
 
 	"github.com/aki2772/MessageBoard_sample/Go/repository" // 独自パッケージ
 )
@@ -23,8 +21,13 @@ type MessageRepository struct {
 // / </summary>
 // / <param name="message">メッセージ</param>
 // / <returns>エラー</returns>
-func (mr MessageRepository) Save(message string) error {
-	// 書き込み先のファイルを開く
+func (mr MessageRepository) Save(message []string) error {
+
+	for _, m := range message {
+		fmt.Println(m)
+	}
+
+	/*// 書き込み先のファイルを開く
 	f, err := os.OpenFile(mr.FilePath, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
 	// 存在しないならエラー
 	if err != nil {
@@ -43,7 +46,7 @@ func (mr MessageRepository) Save(message string) error {
 		return err
 	}
 
-	fmt.Printf("%d bytesの書き込み", n)
+	fmt.Printf("%d bytesの書き込み", n)*/
 	return nil
 }
 
