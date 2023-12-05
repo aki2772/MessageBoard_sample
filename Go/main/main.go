@@ -76,7 +76,7 @@ func New() {
 
 	// メッセージ文字列を結合して作成(時刻データは文字列に変換)
 	msgComp := []string{msgStruct.Name, msgStruct.Message, strconv.Itoa(year) + "." + strconv.Itoa(int(month)) + "." + strconv.Itoa(day) +
-		" " + strconv.Itoa(hour) + ":" + strconv.Itoa(min) + ")"}
+		" " + strconv.Itoa(hour) + ":" + strconv.Itoa(min)}
 
 	// メッセージを永続化
 	err := mrStruct.Save(msgComp)
