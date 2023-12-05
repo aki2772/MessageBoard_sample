@@ -33,7 +33,8 @@ func (mr MessageRepository) Save(message []string) error {
 	}
 	defer f.Close()
 
-	// メッセージをバイト文字列に変換(改行込み)
+	// 名前・メッセージ・時間・区切り文字を連結し、それぞれを改行で区切る
+	// リスト取得時に行ごとにデータを復元し、区切り文字で1データと識別するため。
 	d := []byte(message[0] + "\n" + message[1] + "\n" + message[2] + "\n" + "***" + "\n")
 
 	// 書き込み
