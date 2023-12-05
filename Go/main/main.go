@@ -9,13 +9,14 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/aki2772/MessageBoard_sample/Go/infra"
 	"github.com/aki2772/MessageBoard_sample/Go/model"
 )
 
-const filePath = "message.txt" // ファイルパス
+const filePath = "C:/Users/aki/Documents/GitHub/MessageBoard_sample/messages.txt" // ファイルパス
 
 func main() {
 	// コマンドライン引数が2つでなければ終了
@@ -64,13 +65,24 @@ func New() {
 		Time:    time.Now(),        // time.Time
 	}
 
-	fmt.Println(msgStruct.Message)
-
-	// メッセージを永続化
+	// 永続化関数を持つ構造体を生成
 	mrStruct := infra.MessageRepository{
 		FilePath: filePath, // string
 	}
 
-	// エラーになる
-	fmt.Print(mrStruct.Save("aaa"))
+	// 時刻データを取得
+	year, month, day := msgStruct.Time.Date()
+	hour, min, _ := msgStruct.Time.Clock()
+
+	// メッセージ文字列を結合して作成(時刻データは文字列に変換)
+	msgComp := msgStruct.Name + ": " + msgStruct.Message +
+		" (" + strconv.Itoa(year) + "." + strconv.Itoa(int(month)) + "." + strconv.Itoa(day) +
+		" " + strconv.Itoa(hour) + ":" + strconv.Itoa(min) + ")"
+
+	// メッセージを永続化
+	err := mrStruct.Save(msgComp)
+	if err != nil {
+		fmt.Println("メッセージの永続化に失敗しました。")
+		return
+	}
 }
