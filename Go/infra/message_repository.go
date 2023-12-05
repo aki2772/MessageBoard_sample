@@ -24,11 +24,6 @@ type MessageRepository struct {
 // / <param name="message">メッセージ</param>
 // / <returns>エラー</returns>
 func (mr MessageRepository) Save(message []string) error {
-
-	for _, v := range message {
-		fmt.Println(v)
-	}
-
 	// 書き込み先のファイルを開く
 	f, err := os.OpenFile(mr.FilePath, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
 	// 存在しないならエラー
