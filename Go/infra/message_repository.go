@@ -6,6 +6,7 @@
 package infra
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -31,6 +32,7 @@ func (mr MessageRepository) Save(message []string) error {
 		log.Fatal(err)
 		return err
 	}
+	// 関数終了時にファイルを閉じる
 	defer f.Close()
 
 	// 名前・メッセージ・時間・区切り文字を連結し、それぞれを改行で区切る
@@ -39,6 +41,7 @@ func (mr MessageRepository) Save(message []string) error {
 
 	// 書き込み
 	n, err := f.Write(d)
+	// 失敗したらエラー
 	if err != nil {
 		log.Fatal(err)
 		return err
@@ -52,8 +55,28 @@ func (mr MessageRepository) Save(message []string) error {
 // / 保管されているメッセージのリストを引き出す。
 // / </summary>
 // / <returns>メッセージのリスト</returns>
-func (mr MessageRepository) List() (string, error) {
-	// ファイルからメッセージを読み込む
-	fmt.Println("List")
-	return "", nil
+func (mr MessageRepository) List() ([]string, error) {
+	// ファイルを開く
+	f, err := os.Open(mr.FilePath)
+	// 存在しないならエラー
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	// 関数終了時にファイルを閉じる
+	defer f.Close()
+
+	scanner := bufio.NewScanner(f)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+
+	// ファイルの終端まで読み込んだら終了
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+
+	// リストを返す
+	return nil, nil
 }
