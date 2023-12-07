@@ -12,8 +12,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/aki2772/MessageBoard_sample/Go/infra"
-	"github.com/aki2772/MessageBoard_sample/Go/model"
+	"github.com/aki2772/MessageBoard_sample/Go/infra" // 独自パッケージ
+	"github.com/aki2772/MessageBoard_sample/Go/model" // 独自パッケージ
 )
 
 const filePath = "C:/Users/aki/Documents/GitHub/MessageBoard_sample/messages.txt" // ファイルパス
@@ -37,7 +37,19 @@ func main() {
 }
 
 func List() {
-	fmt.Println("list")
+	// 永続化関数を持つ構造体を生成
+	mrStruct := infra.MessageRepository{
+		FilePath: filePath, // string
+	}
+
+	// メッセージのリストを取得
+	msgList, err := mrStruct.List()
+	// 失敗したら終了
+	if err != nil {
+		fmt.Println("メッセージの取得に失敗しました。")
+		return
+	}
+	fmt.Print(msgList)
 }
 
 // / <summary>
@@ -80,6 +92,7 @@ func New() {
 
 	// メッセージを永続化
 	err := mrStruct.Save(msgComp)
+	// 失敗したら終了
 	if err != nil {
 		fmt.Println("メッセージの永続化に失敗しました。")
 		return
