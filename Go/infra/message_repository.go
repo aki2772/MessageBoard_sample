@@ -66,9 +66,13 @@ func (mr MessageRepository) List() ([]string, error) {
 	// 関数終了時にファイルを閉じる
 	defer f.Close()
 
+	// メッセージのリスト
+	messages := []string{}
+	// ファイルを1行ずつ読み込む
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
-		fmt.Print(scanner.Text() + "```")
+		// リストに追加
+		messages = append(messages, scanner.Text())
 	}
 
 	// ファイルの終端まで読み込んだら終了
@@ -77,6 +81,5 @@ func (mr MessageRepository) List() ([]string, error) {
 		return nil, err
 	}
 
-	// リストを返す
-	return nil, nil
+	return messages, nil
 }
