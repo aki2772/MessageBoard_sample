@@ -68,7 +68,7 @@ func (mr MessageRepository) List() ([]string, error) {
 
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		fmt.Print(scanner.Text() + "```")
 	}
 
 	// ファイルの終端まで読み込んだら終了
