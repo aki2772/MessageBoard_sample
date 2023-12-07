@@ -49,7 +49,10 @@ func List() {
 		fmt.Println("メッセージの取得に失敗しました。")
 		return
 	}
-	fmt.Print(msgList)
+
+	for _, msg := range msgList {
+		fmt.Println(msg)
+	}
 }
 
 // / <summary>
@@ -95,6 +98,5 @@ func New() {
 	// 失敗したら終了
 	if err != nil {
 		fmt.Println("メッセージの永続化に失敗しました。")
-		return
 	}
 }
