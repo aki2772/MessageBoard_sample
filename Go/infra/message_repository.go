@@ -17,7 +17,7 @@ import (
 )
 
 // 一応臨んだ形式でフォーマット
-var layout = "2006:01:02 (15:04:05)" // 時刻のフォーマット
+var layout = "2006.01.02 (15:04:05)" // 時刻のフォーマット
 
 type MessageRepository struct {
 	FilePath                     string // ファイルパス
@@ -105,7 +105,6 @@ func (mr MessageRepository) List() ([]*model.Message, error) {
 	// 1メッセージ4行なので、4で割る
 	for i := 0; i < len(texts)/4; i++ {
 		time, _ := time.Parse(layout, times[i])
-		fmt.Print(time)
 		// メッセージを生成
 		ret = append(ret, &model.Message{
 			Name:    names[i],
