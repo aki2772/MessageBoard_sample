@@ -16,8 +16,8 @@ import (
 	"github.com/aki2772/MessageBoard_sample/Go/repository" // 独自パッケージ
 )
 
-// 一応臨んだ形式でフォーマット
-var layout = "2006.01.02 (15:04:05)" // 時刻のフォーマット
+// 時刻のフォーマット
+var layout = "2006.01.02 15:04:05"
 
 type MessageRepository struct {
 	FilePath                     string // ファイルパス
