@@ -12,10 +12,14 @@ import (
 	"time"
 
 	"github.com/aki2772/MessageBoard_sample/Go/infra" // 独自パッケージ
-	"github.com/aki2772/MessageBoard_sample/Go/model"
+	"github.com/aki2772/MessageBoard_sample/Go/model" // 独自パッケージ
 )
 
-const filePath = "C:/Users/aki/Documents/GitHub/MessageBoard_sample/messages.txt" // ファイルパス
+// ファイルパス
+const filePath = "C:/Users/aki/Documents/GitHub/MessageBoard_sample/messages.txt"
+
+// 時刻のフォーマット
+var layout = "2006.01.02 15:04:05"
 
 func main() {
 	// コマンドライン引数が2つでなければ終了
@@ -50,7 +54,7 @@ func List() {
 	}
 
 	for _, msg := range msgList {
-		fmt.Println(msg)
+		fmt.Println(msg.Name + ": " + msg.Message + " (" + msg.Time.Format(layout) + ")")
 	}
 }
 
