@@ -11,8 +11,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/aki2772/MessageBoard_sample/Go/infra" // 独自パッケージ
-	"github.com/aki2772/MessageBoard_sample/Go/model" // 独自パッケージ
+	"github.com/aki2772/MessageBoard_sample/Go/infra"      // 独自パッケージ
+	"github.com/aki2772/MessageBoard_sample/Go/model"      // 独自パッケージ
+	"github.com/aki2772/MessageBoard_sample/Go/repository" // 独自パッケージ
 )
 
 // ファイルパス
@@ -28,23 +29,23 @@ func main() {
 		return
 	}
 
+	// 永続化関数を持つ構造体を生成
+	mrStruct := infra.MessageRepository{
+		FilePath: filePath, // string
+	}
+
 	cmdLine := os.Args
 	if cmdLine[1] == "list" { // list
-		List()
+		List(mrStruct)
 	} else if cmdLine[1] == "new" { // new
-		New()
+		New(mrStruct)
 	} else {
 		fmt.Println("コマンドライン引数が不正です。")
 		return
 	}
 }
 
-func List() {
-	// 永続化関数を持つ構造体を生成
-	mrStruct := infra.MessageRepository{
-		FilePath: filePath, // string
-	}
-
+func List(mrStruct repository.MessageRepository) {
 	// メッセージのリストを取得
 	msgList, err := mrStruct.List()
 	// 失敗したら終了
@@ -61,7 +62,7 @@ func List() {
 // / <summary>
 // / 新しくメッセージを生成する。
 // / </summary>
-func New() {
+func New(mrStruct repository.MessageRepository) {
 	// 標準入力のスキャナー
 	nameScn := bufio.NewScanner(os.Stdin)
 	messageScn := bufio.NewScanner(os.Stdin)
@@ -81,11 +82,6 @@ func New() {
 		Name:    nameScn.Text(),    // string
 		Message: messageScn.Text(), // string
 		Time:    time.Now(),        // time.Time
-	}
-
-	// 永続化関数を持つ構造体を生成
-	mrStruct := infra.MessageRepository{
-		FilePath: filePath, // string
 	}
 
 	/*// メッセージ文字列を結合して作成(時刻データは文字列に変換)
