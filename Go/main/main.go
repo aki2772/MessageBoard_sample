@@ -9,14 +9,17 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/aki2772/MessageBoard_sample/Go/infra" // 独自パッケージ
 	"github.com/aki2772/MessageBoard_sample/Go/model" // 独自パッケージ
 )
 
-const filePath = "C:/Users/aki/Documents/GitHub/MessageBoard_sample/messages.txt" // ファイルパス
+// ファイルパス
+const filePath = "C:/Users/aki/Documents/GitHub/MessageBoard_sample/messages.txt"
+
+// 時刻のフォーマット
+var layout = "2006.01.02 15:04:05"
 
 func main() {
 	// コマンドライン引数が2つでなければ終了
@@ -51,7 +54,7 @@ func List() {
 	}
 
 	for _, msg := range msgList {
-		fmt.Println(msg)
+		fmt.Println(msg.Name + ": " + msg.Message + " (" + msg.Time.Format(layout) + ")")
 	}
 }
 
@@ -85,16 +88,12 @@ func New() {
 		FilePath: filePath, // string
 	}
 
-	// 時刻データを取得
-	year, month, day := msgStruct.Time.Date()
-	hour, min, _ := msgStruct.Time.Clock()
-
-	// メッセージ文字列を結合して作成(時刻データは文字列に変換)
-	msgComp := []string{msgStruct.Name, msgStruct.Message, strconv.Itoa(year) + "." + strconv.Itoa(int(month)) + "." + strconv.Itoa(day) +
-		" " + strconv.Itoa(hour) + ":" + strconv.Itoa(min)}
+	/*// メッセージ文字列を結合して作成(時刻データは文字列に変換)
+	msgStr := msgStruct.Name + msgStruct.Message + strconv.Itoa(year) + "." + strconv.Itoa(int(month)) + "." + strconv.Itoa(day) +
+		" " + strconv.Itoa(hour) + ":" + strconv.Itoa(min)*/
 
 	// メッセージを永続化
-	err := mrStruct.Save(msgComp)
+	err := mrStruct.Save(msgStruct)
 	// 失敗したら終了
 	if err != nil {
 		fmt.Println("メッセージの永続化に失敗しました。")

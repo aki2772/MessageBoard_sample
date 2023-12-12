@@ -10,9 +10,14 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
+	"github.com/aki2772/MessageBoard_sample/Go/model"
 	"github.com/aki2772/MessageBoard_sample/Go/repository" // 独自パッケージ
 )
+
+// 時刻のフォーマット
+var layout = "2006.01.02 15:04:05"
 
 type MessageRepository struct {
 	FilePath                     string // ファイルパス
@@ -24,7 +29,7 @@ type MessageRepository struct {
 // / </summary>
 // / <param name="message">メッセージ</param>
 // / <returns>エラー</returns>
-func (mr MessageRepository) Save(message []string) error {
+func (mr MessageRepository) Save(message *model.Message) error {
 	// 書き込み先のファイルを開く
 	f, err := os.OpenFile(mr.FilePath, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
 	// 存在しないならエラー
@@ -37,7 +42,7 @@ func (mr MessageRepository) Save(message []string) error {
 
 	// 名前・メッセージ・時間を連結し、それぞれを改行で区切る。
 	// リスト取得時に行ごとにデータを復元し、最後の改行で1行開け、1メッセージと識別する。
-	d := []byte(message[0] + "\n" + message[1] + "\n" + message[2] + "\n" + "\n")
+	d := []byte(message.Name + "\n" + message.Message + "\n" + message.Time.Format(layout) + "\n" + "\n")
 
 	// 書き込み
 	n, err := f.Write(d)
@@ -55,7 +60,7 @@ func (mr MessageRepository) Save(message []string) error {
 // / 保管されているメッセージのリストを引き出す。
 // / </summary>
 // / <returns>メッセージのリスト</returns>
-func (mr MessageRepository) List() ([]string, error) {
+func (mr MessageRepository) List() ([]*model.Message, error) {
 	// ファイルを開く
 	f, err := os.Open(mr.FilePath)
 	// 存在しないならエラー
@@ -94,12 +99,18 @@ func (mr MessageRepository) List() ([]string, error) {
 		}
 	}
 
-	// リストを連結
-	ret := []string{}
+	// アウトプットメッセージ
+	ret := []*model.Message{}
+
 	// 1メッセージ4行なので、4で割る
 	for i := 0; i < len(texts)/4; i++ {
-		// 名前・メッセージ・時間を連結
-		ret = append(ret, names[i]+": "+messages[i]+" ("+times[i]+")")
+		time, _ := time.Parse(layout, times[i])
+		// メッセージを生成
+		ret = append(ret, &model.Message{
+			Name:    names[i],
+			Message: messages[i],
+			Time:    time,
+		})
 	}
 
 	// ファイルの終端まで読み込んだら終了
