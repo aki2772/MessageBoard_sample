@@ -35,17 +35,8 @@ func main() {
 		return
 	}
 
-	// 永続化関数を持つ構造体を生成
-	mrStruct := infra.MessageRepository{
-		FilePath: filePath, // string
-	}
-
 	cmdLine := os.Args
-	if cmdLine[1] == "list" { // list
-		List(mrStruct, db)
-	} else if cmdLine[1] == "new" { // new
-		New(mrStruct, db)
-	} else {
+	if cmdLine[1] != "list" && cmdLine[1] != "new" {
 		fmt.Println("コマンドライン引数が不正です。")
 		return
 	}
@@ -74,6 +65,17 @@ func main() {
 		log.Fatal(pingErr)
 	}
 	fmt.Println("Connected!")
+
+	// 永続化関数を持つ構造体を生成
+	mrStruct := infra.MessageRepository{
+		FilePath: filePath, // string
+	}
+
+	if cmdLine[1] == "list" { // list
+		List(mrStruct, db)
+	} else { // new
+		New(mrStruct, db)
+	}
 }
 
 func New(mrStruct repository.MessageRepository, db *sql.DB) {
