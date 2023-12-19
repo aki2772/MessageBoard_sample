@@ -37,7 +37,7 @@ func (mr MessageRepository) DBSave(message *model.Message, db *sql.DB) error {
 	defer ins.Close()
 
 	// クエリ実行
-	ins.Exec(`aki`, `Hello, World!`, `2006.01.02 15:04:05`)
+	ins.Exec(message.Name, message.Message, message.Time)
 
 	return nil
 }
