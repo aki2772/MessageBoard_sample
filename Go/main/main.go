@@ -64,7 +64,8 @@ func main() {
 	if pingErr != nil {
 		log.Fatal(pingErr)
 	}
-	fmt.Println("Connected!")
+	fmt.Println("データベースに接続しました")
+	fmt.Println()
 
 	// 永続化関数を持つ構造体を生成
 	mrStruct := infra.MessageRepository{
