@@ -6,6 +6,11 @@
 package infra
 
 import (
+	/*"bufio"
+	"fmt"
+	"os"
+	"time"*/
+
 	"database/sql"
 	"log"
 
@@ -37,7 +42,7 @@ func (mr MessageRepository) DBSave(message *model.Message, db *sql.DB) error {
 	return nil
 }
 
-func (mr MessageRepository) DBList(db *sql.DB) ([]model.Message, error) {
+func (mr MessageRepository) DBList(db *sql.DB) ([]*model.Message, error) {
 	rows, err := db.Query("SELECT * FROM messages")
 	if err != nil {
 		log.Fatal(err)
@@ -45,14 +50,14 @@ func (mr MessageRepository) DBList(db *sql.DB) ([]model.Message, error) {
 	defer rows.Close()
 
 	// アウトプットメッセージ
-	var ret []model.Message
+	var ret []*model.Message
 	for rows.Next() {
 		model := model.Message{}
 		err := rows.Scan(&model.Name, &model.Message, &model.Time)
 		if err != nil {
 			log.Fatal(err)
 		}
-		ret = append(ret, model)
+		ret = append(ret, &model)
 	}
 	return ret, nil
 }
@@ -154,4 +159,5 @@ func (mr MessageRepository) List() ([]*model.Message, error) {
 	}
 
 	return ret, nil
-}*/
+}
+*/
