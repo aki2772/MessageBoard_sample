@@ -6,14 +6,13 @@
 package infra
 
 import (
-	"bufio"
-	"fmt"
+	"database/sql"
 	"log"
-	"os"
-	"time"
 
-	"github.com/aki2772/MessageBoard_sample/Go/model"
+	"github.com/aki2772/MessageBoard_sample/Go/model"      // 独自パッケージ
 	"github.com/aki2772/MessageBoard_sample/Go/repository" // 独自パッケージ
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // 時刻のフォーマット
@@ -24,6 +23,41 @@ type MessageRepository struct {
 	repository.MessageRepository        // インターフェースの埋め込み
 }
 
+func (mr MessageRepository) DBSave(message *model.Message, db *sql.DB) error {
+	// テーブル作成
+	ins, err := db.Prepare("INSERT INTO messages (name, message, time) VALUES(?, ?, ?)")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer ins.Close()
+
+	// クエリ実行
+	ins.Exec(`aki`, `Hello, World!`, `2006.01.02 15:04:05`)
+
+	return nil
+}
+
+func (mr MessageRepository) DBList(db *sql.DB) ([]model.Message, error) {
+	rows, err := db.Query("SELECT * FROM messages")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	// アウトプットメッセージ
+	var ret []model.Message
+	for rows.Next() {
+		model := model.Message{}
+		err := rows.Scan(&model.Name, &model.Message, &model.Time)
+		if err != nil {
+			log.Fatal(err)
+		}
+		ret = append(ret, model)
+	}
+	return ret, nil
+}
+
+/*
 // / <summary>
 // / メッセージを保管する。
 // / </summary>
@@ -120,4 +154,4 @@ func (mr MessageRepository) List() ([]*model.Message, error) {
 	}
 
 	return ret, nil
-}
+}*/
