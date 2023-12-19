@@ -30,7 +30,7 @@ type MessageRepository struct {
 
 func (mr MessageRepository) DBSave(message *model.Message, db *sql.DB) error {
 	// テーブル作成
-	ins, err := db.Prepare("INSERT INTO messages (name, message, time) VALUES(?, ?, ?)")
+	ins, err := db.Prepare("INSERT INTO message_tb (name, message, time) VALUES(?, ?, ?)")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,7 +43,7 @@ func (mr MessageRepository) DBSave(message *model.Message, db *sql.DB) error {
 }
 
 func (mr MessageRepository) DBList(db *sql.DB) ([]*model.Message, error) {
-	rows, err := db.Query("SELECT * FROM messages")
+	rows, err := db.Query("SELECT * FROM message_tb")
 	if err != nil {
 		log.Fatal(err)
 	}
