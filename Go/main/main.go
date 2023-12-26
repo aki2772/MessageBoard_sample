@@ -41,6 +41,11 @@ func main() {
 		return
 	}
 
+	jst, err := time.LoadLocation("Asia/Tokyo")
+	if err != nil {
+		// エラーハンドリング
+	}
+
 	// データベースの設定
 	cfg := mysql.Config{
 		DBName:    "message-db",
@@ -50,6 +55,7 @@ func main() {
 		Net:       "tcp",
 		ParseTime: true,
 		Collation: "utf8mb4_unicode_ci",
+		Loc:       jst,
 	}
 
 	// データベースに接続
