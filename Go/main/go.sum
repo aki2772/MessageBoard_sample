@@ -1,10 +1,4 @@
-github.com/aki2772/MessageBoard_sample v0.0.0-20231219074325-74c572121903 h1:UuBvV8+CX5rmpeCUEg7sJoe4zbzG4R5oyYLSNORDOgo=
-github.com/aki2772/MessageBoard_sample v0.0.0-20231219074325-74c572121903/go.mod h1:cm+H6rDS/o6HtYIhM7EyO9KY+h67utRXTwC+QDrpLgs=
-github.com/aki2772/MessageBoard_sample v0.0.0-20231219074814-fc6c83de1eb5 h1:UA57YKpxC+g+6fG3K6W47UfwFOLB+jAXwhOM0+60J8o=
-github.com/aki2772/MessageBoard_sample v0.0.0-20231219074814-fc6c83de1eb5/go.mod h1:cm+H6rDS/o6HtYIhM7EyO9KY+h67utRXTwC+QDrpLgs=
-github.com/aki2772/MessageBoard_sample v0.0.0-20231219074852-50fe9184b468 h1:CAeRfdEn5a4jKxXwnOZnYJjtFy6gy4+PqAPMg86D+xY=
-github.com/aki2772/MessageBoard_sample v0.0.0-20231219074852-50fe9184b468/go.mod h1:cm+H6rDS/o6HtYIhM7EyO9KY+h67utRXTwC+QDrpLgs=
-github.com/aki2772/MessageBoard_sample v0.0.0-20231219074859-c204bd328b26 h1:vaiRdC4w6K9isO1dUh3RnofuCElrx/AYLWEh6+BWMys=
-github.com/aki2772/MessageBoard_sample v0.0.0-20231219074859-c204bd328b26/go.mod h1:cm+H6rDS/o6HtYIhM7EyO9KY+h67utRXTwC+QDrpLgs=
+github.com/aki2772/MessageBoard_sample v0.0.0-20231219101339-6ad943ba2ea9 h1:H580XG2j+7DUduT/fPBL+yZRMF8ra4HYE4RakWTrSqQ=
+github.com/aki2772/MessageBoard_sample v0.0.0-20231219101339-6ad943ba2ea9/go.mod h1:cm+H6rDS/o6HtYIhM7EyO9KY+h67utRXTwC+QDrpLgs=
 github.com/go-sql-driver/mysql v1.7.1 h1:lUIinVbN1DY0xBg0eMOzmmtGoHwWBbvnWubQUrtU8EI=
 github.com/go-sql-driver/mysql v1.7.1/go.mod h1:OXbVy3sEdcQ2Doequ6Z5BW6fXNQTmx+9S1MCJN5yJMI=
