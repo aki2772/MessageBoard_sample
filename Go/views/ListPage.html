@@ -1,0 +1,22 @@
+{{define "listPage"}}
+    {{template "header" .}}
+    <blockquote>
+            <table border="1">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Message</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .MsgList}}
+            <tr>
+                <td>{{.Name}}</td>
+                <td>{{.Message}}</td>
+                <td>{{.Time}}</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+{{end}}
