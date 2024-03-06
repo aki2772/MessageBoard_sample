@@ -1,0 +1,16 @@
+{{define "mainPage"}}
+    {{template "header" .}}
+<blockquote>
+    <div><button onclick="mpNew()">new</button></div>
+    <div><button onclick="mpList()">list</button></div>
+    <script>
+        function mpNew() {
+            window.location.href = 'http://localhost:1323/newPage';
+        }
+
+        function mpList() {
+            window.location.href = 'http://localhost:1323/listPage';
+        }
+    </script>
+</blockquote>
+{{end}}
