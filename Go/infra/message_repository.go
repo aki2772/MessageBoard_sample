@@ -24,8 +24,7 @@ import (
 var layout = "2006.01.02 15:04:05"
 
 type MessageRepository struct {
-	FilePath                     string // ファイルパス
-	repository.MessageRepository        // インターフェースの埋め込み
+	repository.MessageRepository // インターフェースの埋め込み
 }
 
 func (mr MessageRepository) DBSave(message *model.Message, db *sql.DB) error {
