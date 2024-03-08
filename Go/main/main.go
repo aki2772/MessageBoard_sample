@@ -9,13 +9,13 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"main/infra"
 	"time"
 
 	"database/sql"
-	"fmt"
 
 	"github.com/aki2772/MessageBoard_sample/Go/model"      // 独自パッケージ
 	"github.com/aki2772/MessageBoard_sample/Go/repository" // 独自パッケージ
@@ -69,24 +69,15 @@ func main() {
 	// http://localhost:1323/main にGETアクセスされるとviewMainPageハンドラーを実行する
 	e.GET("/main", viewMainPage)
 
+	// POSTにすると{"message":"Method Not Allowed"}というレスポンスが返ってくるためGETにしている
+	// なぜGETでPOSTの処理ができるのかは不明
+	// POSTにするとviewNewPageハンドラーが実行されない
 	e.GET("/newPage", viewNewPage)
 
 	e.GET("/listPage", viewListPage)
 
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
-}
-
-func List(mrStruct repository.MessageRepository, db *sql.DB) []*model.Message {
-	// メッセージのリストを取得
-	msgList, err := mrStruct.DBList(db)
-	// 失敗したら終了
-	if err != nil {
-		fmt.Println("メッセージの取得に失敗しました。")
-		return nil
-	}
-
-	return msgList
 }
 
 // データベース接続
@@ -123,6 +114,35 @@ func ConnectDB() *sql.DB {
 	return db
 }
 
+func New(mrStruct repository.MessageRepository, db *sql.DB, name string, message string) {
+	// メッセージを作成
+	msg := model.Message{
+		Name:    name,
+		Message: message,
+		Time:    time.Now(),
+	}
+
+	// メッセージを保存
+	err := mrStruct.DBSave(&msg, db)
+	// 失敗したら終了
+	if err != nil {
+		fmt.Println("メッセージの保存に失敗しました。")
+		return
+	}
+}
+
+func List(mrStruct repository.MessageRepository, db *sql.DB) []*model.Message {
+	// メッセージのリストを取得
+	msgList, err := mrStruct.DBList(db)
+	// 失敗したら終了
+	if err != nil {
+		fmt.Println("メッセージの取得に失敗しました。")
+		return nil
+	}
+
+	return msgList
+}
+
 // メインページ表示ハンドラー
 func viewMainPage(c echo.Context) error {
 	// テンプレートに渡す値をセット
@@ -144,7 +164,7 @@ func viewMainPage(c echo.Context) error {
 func viewNewPage(c echo.Context) error {
 	// テンプレートに渡す値をセット
 	var common = CommonData{
-		"新規メッセージ",
+		"新規メッセージ作成",
 	}
 	data := struct {
 		// field名は大文字で始める
@@ -152,7 +172,24 @@ func viewNewPage(c echo.Context) error {
 	}{
 		CommonData: common,
 	}
-	// Renderでhtmlを表示
+
+	// フォームから送信されたテキストデータを取得
+	name := c.FormValue("name")
+	message := c.FormValue("message")
+
+	// テキストデータが空の場合はエラーを返す
+	if name == "" || message == "" {
+		fmt.Println("名前またはメッセージが入力されていません")
+		return c.Render(http.StatusNotFound, "newPage", data)
+	}
+
+	// ここでテキストデータを使用して必要な処理を実行
+	// データベースに接続
+	mrStruct := infra.MessageRepository{}
+	db := ConnectDB()
+
+	// メッセージを保存
+	New(mrStruct, db, name, message)
 	return c.Render(http.StatusOK, "newPage", data)
 }
 
@@ -172,7 +209,7 @@ func viewListPage(c echo.Context) error {
 	}*/
 	// テンプレートに渡す値をセット
 	var common = CommonData{
-		"メッセージリスト",
+		"メッセージリスト表示",
 	}
 	data := struct {
 		// field名は大文字で始める
