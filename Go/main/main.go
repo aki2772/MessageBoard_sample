@@ -199,14 +199,13 @@ func viewListPage(c echo.Context) error {
 	mrStruct := infra.MessageRepository{}
 	db := ConnectDB()
 
-	/*var times []string
-	i := 0*/
+	var times []string
 
 	msgList := List(mrStruct, db)
-	/*for _, msg := range msgList {
-		times[i] = msg.Time.Format(layout)
-		i++
-	}*/
+	for _, msg := range msgList {
+		times = append(times, msg.Time.Format(layout))
+	}
+
 	// テンプレートに渡す値をセット
 	var common = CommonData{
 		"メッセージリスト表示",
@@ -215,11 +214,11 @@ func viewListPage(c echo.Context) error {
 		// field名は大文字で始める
 		CommonData
 		MsgList []*model.Message
-		// Times   []string
+		Times   []string
 	}{
 		CommonData: common,
 		MsgList:    msgList,
-		// Times:      times,
+		Times:      times,
 	}
 	// Renderでhtmlを表示
 	return c.Render(http.StatusOK, "listPage", data)
