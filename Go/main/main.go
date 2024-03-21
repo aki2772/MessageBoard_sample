@@ -11,15 +11,13 @@ package main
 import (
 	"fmt"
 	"io"
-	"log"
-	"main/infra"
 	"time"
 
 	"database/sql"
 
-	"github.com/aki2772/MessageBoard_sample/Go/model"      // 独自パッケージ
-	"github.com/aki2772/MessageBoard_sample/Go/repository" // 独自パッケージ
-
+	"github.com/aki2772/MessageBoard_sample/infra"
+	"github.com/aki2772/MessageBoard_sample/model"
+	"github.com/aki2772/MessageBoard_sample/repository"
 	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 
@@ -52,6 +50,17 @@ type CommonData struct {
 
 func main() {
 
+	//この時点でDBに接続
+	db, err := ConnectDB()
+	if err != nil {
+		fmt.Println("データベースに接続できませんでした")
+		// エラーが発生したら終了
+		return
+	}
+
+	// メッセージリポジトリの作成
+	messageRepository := infra.NewMessageRepository(db)
+
 	// インスタンスを作成
 	e := echo.New()
 
@@ -65,23 +74,25 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
+	// コントローラーを作成
+	mc := NewMessageController(messageRepository)
+
 	// ルートを設定
 	// http://localhost:1323/main にGETアクセスされるとviewMainPageハンドラーを実行する
-	e.GET("/main", viewMainPage)
+	e.GET("/main", mc.ViewMainPage)
 
-	// POSTにすると{"message":"Method Not Allowed"}というレスポンスが返ってくるためGETにしている
-	// なぜGETでPOSTの処理ができるのかは不明
-	// POSTにするとviewNewPageハンドラーが実行されない
-	e.GET("/newPage", viewNewPage)
+	e.GET("/newPage", mc.ViewNewPage)
 
-	e.GET("/listPage", viewListPage)
+	e.GET("/listPage", mc.ViewListPage)
+
+	e.POST("/api/new", mc.NewApi)
 
 	// サーバーをポート番号1323で起動
 	e.Logger.Fatal(e.Start(":1323"))
 }
 
 // データベース接続
-func ConnectDB() *sql.DB {
+func ConnectDB() (*sql.DB, error) {
 	// タイムゾーンを設定
 	jst, _ := time.LoadLocation("Asia/Tokyo")
 
@@ -100,21 +111,21 @@ func ConnectDB() *sql.DB {
 	// データベースに接続
 	db, err := sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	// 接続確認
 	pingErr := db.Ping()
 	if pingErr != nil {
-		log.Fatal(pingErr)
+		return nil, pingErr
 	}
 	fmt.Println("データベースに接続しました")
 	fmt.Println()
 
-	return db
+	return db, nil
 }
 
-func New(mrStruct repository.MessageRepository, db *sql.DB, name string, message string) {
+func New(mrStruct repository.MessageRepository, name string, message string) {
 	// メッセージを作成
 	msg := model.Message{
 		Name:    name,
@@ -123,7 +134,7 @@ func New(mrStruct repository.MessageRepository, db *sql.DB, name string, message
 	}
 
 	// メッセージを保存
-	err := mrStruct.DBSave(&msg, db)
+	err := mrStruct.DBSave(&msg)
 	// 失敗したら終了
 	if err != nil {
 		fmt.Println("メッセージの保存に失敗しました。")
@@ -131,9 +142,9 @@ func New(mrStruct repository.MessageRepository, db *sql.DB, name string, message
 	}
 }
 
-func List(mrStruct repository.MessageRepository, db *sql.DB) []*model.Message {
+func List(mrStruct repository.MessageRepository) []*model.Message {
 	// メッセージのリストを取得
-	msgList, err := mrStruct.DBList(db)
+	msgList, err := mrStruct.DBList()
 	// 失敗したら終了
 	if err != nil {
 		fmt.Println("メッセージの取得に失敗しました。")
@@ -143,8 +154,17 @@ func List(mrStruct repository.MessageRepository, db *sql.DB) []*model.Message {
 	return msgList
 }
 
+// コンストラクタ
+func NewMessageController(mr repository.MessageRepository) *MessageController {
+	return &MessageController{mr: mr}
+}
+
+type MessageController struct {
+	mr repository.MessageRepository
+}
+
 // メインページ表示ハンドラー
-func viewMainPage(c echo.Context) error {
+func (mc *MessageController) ViewMainPage(c echo.Context) error {
 	// テンプレートに渡す値をセット
 	var common = CommonData{
 		"ホーム",
@@ -161,7 +181,7 @@ func viewMainPage(c echo.Context) error {
 }
 
 // 新規作成ページ表示ハンドラー
-func viewNewPage(c echo.Context) error {
+func (mc *MessageController) ViewNewPage(c echo.Context) error {
 	// テンプレートに渡す値をセット
 	var common = CommonData{
 		"新規メッセージ作成",
@@ -173,35 +193,15 @@ func viewNewPage(c echo.Context) error {
 		CommonData: common,
 	}
 
-	// フォームから送信されたテキストデータを取得
-	name := c.FormValue("name")
-	message := c.FormValue("message")
-
-	// テキストデータが空の場合はエラーを返す
-	if name == "" || message == "" {
-		fmt.Println("名前またはメッセージが入力されていません")
-		return c.Render(http.StatusNotFound, "newPage", data)
-	}
-
-	// ここでテキストデータを使用して必要な処理を実行
-	// データベースに接続
-	mrStruct := infra.MessageRepository{}
-	db := ConnectDB()
-
-	// メッセージを保存
-	New(mrStruct, db, name, message)
+	// Renderでhtmlを表示
 	return c.Render(http.StatusOK, "newPage", data)
 }
 
 // 一覧ページ表示ハンドラー
-func viewListPage(c echo.Context) error {
-	// データベースに接続
-	mrStruct := infra.MessageRepository{}
-	db := ConnectDB()
-
+func (mc *MessageController) ViewListPage(c echo.Context) error {
 	var times []string
 
-	msgList := List(mrStruct, db)
+	msgList := List(mc.mr)
 	for _, msg := range msgList {
 		times = append(times, msg.Time.Format(layout))
 	}
@@ -222,4 +222,29 @@ func viewListPage(c echo.Context) error {
 	}
 	// Renderでhtmlを表示
 	return c.Render(http.StatusOK, "listPage", data)
+}
+
+// 新規作成APIハンドラー
+func (mc MessageController) NewApi(c echo.Context) error {
+	// フォームから送信されたテキストデータを取得(htmlからのfetch)
+	m := new(model.Message)
+	if err := c.Bind(m); err != nil {
+		return err
+	}
+
+	name := m.Name
+	message := m.Message
+
+	data := struct {
+		Name    string
+		Message string
+	}{
+		Name:    name,
+		Message: message,
+	}
+
+	// メッセージを保存
+	New(mc.mr, name, message)
+	// JSONを返す
+	return c.JSON(http.StatusOK, data)
 }
