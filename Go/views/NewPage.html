@@ -57,17 +57,49 @@
             </style>
         </head>
         <body>
-            <form action="/newPage" method="get">
-                <label for="textInput1">name</label>
+            <form action="/newPage">
                 <input type="text" id="name" name="name"><br>
-                <label for="textInput2">message</label>
                 <input type="text" id="message" name="message"><br>
-                <button type="submit">Submit</button>
+                <button type="button" value="submit" onclick="submitJson()">Submit</button>
                 <button type="button" onclick="mpMain()">Cancel</button>
             </form>
             <script>
                 function mpMain() {
                     window.location.href = 'http://localhost:1323/main';
+                }
+
+                function submitJson() {
+                    var name = document.getElementById('name').value;
+                    var message = document.getElementById('message').value;
+
+                    // nameとmessageが空かどうかチェック
+                    if (!name.trim() || !message.trim()) {
+                        alert("nameとmessageは必須です");
+                        return;
+                    }
+
+                    fetch('http://localhost:1323/api/new', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+
+                        // データを文字列化
+                        body: JSON.stringify({
+                            name: name,
+                            message: message
+                        })
+                    }).then(response => response.json())
+
+                    // 成功の場合、レスポンスをコンソールに出力
+                    .then(data => {
+                        alert("メッセージの送信が完了しました")
+                    })
+
+                    // エラーの場合、エラーをコンソールに出力
+                    .catch((error) => {
+                        alert("メッセージの送信に失敗しました")
+                    })
                 }
             </script>
         </body>
