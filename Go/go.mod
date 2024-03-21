@@ -1,9 +1,8 @@
-module main
+module github.com/aki2772/MessageBoard_sample
 
 go 1.21.3
 
 require (
-	github.com/aki2772/MessageBoard_sample v0.0.0-20240112005152-842983ae3b36
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/labstack/echo/v4 v4.11.4
 )
