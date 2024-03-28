@@ -23,16 +23,12 @@ import (
 
 	"net/http"
 
-	// テンプレート用パッケージ
 	"html/template"
 	// ミドルウェア用パッケージ
 	"github.com/labstack/echo/v4/middleware"
 	// メインのフレームワークにechoを使用
 	"github.com/labstack/echo/v4"
 )
-
-// 時刻のフォーマット
-var layout = "2006.01.02 15:04:05"
 
 type Template struct {
 	templates *template.Template
@@ -59,7 +55,7 @@ func main() {
 	}
 
 	// メッセージリポジトリの作成
-	messageRepository := infra.NewMessageRepository(db)
+	messageRepository := infra.NewMySQLMessageRepository(db)
 
 	// インスタンスを作成
 	e := echo.New()
@@ -87,14 +83,23 @@ func main() {
 
 	e.POST("/api/new", mc.NewApi)
 
+	e.GET("/api/list", mc.ListApi)
+
 	// サーバーをポート番号1323で起動
-	e.Logger.Fatal(e.Start(":1323"))
+	err = e.Start(":1323")
+	if err != nil {
+		fmt.Println("サーバーの起動に失敗しました")
+		return
+	}
 }
 
 // データベース接続
 func ConnectDB() (*sql.DB, error) {
 	// タイムゾーンを設定
-	jst, _ := time.LoadLocation("Asia/Tokyo")
+	jst, err := time.LoadLocation("Asia/Tokyo")
+	if err != nil {
+		return nil, err
+	}
 
 	// データベースの設定
 	cfg := mysql.Config{
@@ -125,26 +130,27 @@ func ConnectDB() (*sql.DB, error) {
 	return db, nil
 }
 
-func New(mrStruct repository.MessageRepository, name string, message string) {
+func New(mrStruct repository.Message, name string, message string) error {
 	// メッセージを作成
 	msg := model.Message{
 		Name:    name,
 		Message: message,
-		Time:    time.Now(),
+		Time:    time.Now().In(time.FixedZone("Asia/Tokyo", 9*60*60)),
 	}
 
 	// メッセージを保存
-	err := mrStruct.DBSave(&msg)
-	// 失敗したら終了
+	err := mrStruct.Save(&msg)
 	if err != nil {
 		fmt.Println("メッセージの保存に失敗しました。")
-		return
+		return err
 	}
+
+	return nil
 }
 
-func List(mrStruct repository.MessageRepository) []*model.Message {
+func List(mrStruct repository.Message) []*model.Message {
 	// メッセージのリストを取得
-	msgList, err := mrStruct.DBList()
+	msgList, err := mrStruct.List()
 	// 失敗したら終了
 	if err != nil {
 		fmt.Println("メッセージの取得に失敗しました。")
@@ -155,12 +161,12 @@ func List(mrStruct repository.MessageRepository) []*model.Message {
 }
 
 // コンストラクタ
-func NewMessageController(mr repository.MessageRepository) *MessageController {
+func NewMessageController(mr repository.Message) *MessageController {
 	return &MessageController{mr: mr}
 }
 
 type MessageController struct {
-	mr repository.MessageRepository
+	mr repository.Message
 }
 
 // メインページ表示ハンドラー
@@ -199,12 +205,7 @@ func (mc *MessageController) ViewNewPage(c echo.Context) error {
 
 // 一覧ページ表示ハンドラー
 func (mc *MessageController) ViewListPage(c echo.Context) error {
-	var times []string
-
-	msgList := List(mc.mr)
-	for _, msg := range msgList {
-		times = append(times, msg.Time.Format(layout))
-	}
+	// msgList := List(mc.mr)
 
 	// テンプレートに渡す値をセット
 	var common = CommonData{
@@ -214,11 +215,9 @@ func (mc *MessageController) ViewListPage(c echo.Context) error {
 		// field名は大文字で始める
 		CommonData
 		MsgList []*model.Message
-		Times   []string
 	}{
 		CommonData: common,
-		MsgList:    msgList,
-		Times:      times,
+		// MsgList:    msgList,
 	}
 	// Renderでhtmlを表示
 	return c.Render(http.StatusOK, "listPage", data)
@@ -236,8 +235,8 @@ func (mc MessageController) NewApi(c echo.Context) error {
 	message := m.Message
 
 	data := struct {
-		Name    string
-		Message string
+		Name    string `json:"name"`
+		Message string `json:"message"`
 	}{
 		Name:    name,
 		Message: message,
@@ -247,4 +246,13 @@ func (mc MessageController) NewApi(c echo.Context) error {
 	New(mc.mr, name, message)
 	// JSONを返す
 	return c.JSON(http.StatusOK, data)
+}
+
+// 一覧データ要求APIハンドラー
+func (mc MessageController) ListApi(c echo.Context) error {
+	// メッセージのリストを取得
+	msgList := List(mc.mr)
+
+	// JSONを返す
+	return c.JSON(http.StatusOK, msgList)
 }
