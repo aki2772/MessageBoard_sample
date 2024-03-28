@@ -7,10 +7,8 @@ package repository
 
 import "github.com/aki2772/MessageBoard_sample/model"
 
-type MessageRepository interface {
-	/*Save(*model.Message) error       // メッセージを保管する
-	List() ([]*model.Message, error) // 保管されているメッセージのリストを引き出す*/
-
-	DBSave(*model.Message) error       // メッセージを保管する
-	DBList() ([]*model.Message, error) // 保管されているメッセージのリストを引き出す
+// ここはrepositorypackage内のMessageという書き方で良い
+type Message interface {
+	Save(*model.Message) error       // メッセージを保管する
+	List() ([]*model.Message, error) // 保管されているメッセージのリストを引き出す
 }
