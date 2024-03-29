@@ -1,0 +1,50 @@
+{{define "mainPage"}}
+    {{template "header" .}}
+<blockquote>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 0;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+            }
+            button {
+                display: block;
+                margin: auto;
+            }
+            .container {
+                text-align: center;
+            }
+            .btn {
+                background-color: #007bff;
+                color: #fff;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 3px;
+                cursor: pointer;
+                margin: 10px;
+                text-decoration: none;
+                display: inline-block;
+            }
+            .btn:hover {
+                background-color: #0056b3;
+            }
+        </style>
+    </head>
+    <div><button type="button" onclick="mpNew()">new</button></div>
+    <div><button type="button" onclick="mpList()">list</button></div>
+    <script>
+        function mpNew() {
+            window.location.href = 'http://localhost:1323/newPage';
+        }
+
+        function mpList() {
+            window.location.href = 'http://localhost:3000/';
+        }
+    </script>
+</blockquote>
+{{end}}

@@ -1,0 +1,59 @@
+{{define "listPage"}}
+<blockquote>
+<head>
+<style>
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+    h2 {
+        text-align: center;
+        color: #333;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th {
+        background-color: #007bff;
+        color: #fff;
+    }
+    th,
+    td {
+        padding: 10px;
+        text-align: left;
+    }
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+    button[type="button"] {
+        background-color: #ff4d4d;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 3px;
+        cursor: pointer;
+        margin: 10px;
+        text-decoration: none;
+        display: block;
+        margin-left: auto;
+    }
+    button[type="button"]:hover {
+        background-color: #ff1a1a;
+    }
+</style>
+</head>
+<h1>メッセージボード</h1>
+<h2>メッセージリスト表示</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Message</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+</blockquote>
+{{end}}
