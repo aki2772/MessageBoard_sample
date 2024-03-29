@@ -22,3 +22,7 @@ go.work
 
 # Local edits
 *.txt
+*.yaml
+*.html
+Go/pkg/*
+Go/docker/*
