@@ -1,0 +1,108 @@
+{{define "newPage"}}
+    {{template "header" .}}
+    <blockquote>
+        <head>
+            <style>
+                form {
+                    background-color: #fff;
+                    border-radius: 5px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    padding: 20px;
+                    width: 300px;
+                    display: block;
+                    margin: auto;
+                }
+                label {
+                    display: block;
+                    margin-bottom: 5px;
+                    color: #555;
+                }
+                input[type="text"],
+                textarea {
+                    width: 100%;
+                    padding: 8px;
+                    margin-bottom: 10px;
+                    border: 1px solid #ccc;
+                    border-radius: 3px;
+                    box-sizing: border-box;
+                }
+                textarea {
+                    height: 100px;
+                }
+                button[type="submit"] {
+                    background-color: #007bff;
+                    color: #fff;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 3px;
+                    cursor: pointer;
+                }
+                button[type="submit"]:hover {
+                    background-color: #0056b3;
+                }
+                button[type="button"] {
+                    background-color: #ff4d4d;
+                    color: #fff;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 3px;
+                    cursor: pointer;
+                    margin: 10px;
+                    text-decoration: none;
+                    display: inline-block;
+                }
+                button[type="button"]:hover {
+                    background-color: #ff1a1a;
+                }
+            </style>
+        </head>
+        <body>
+            <form action="/newPage">
+                <input type="text" id="name" name="name"><br>
+                <input type="text" id="message" name="message"><br>
+                <button type="button" value="submit" onclick="submitJson()">Submit</button>
+                <button type="button" onclick="mpMain()">Cancel</button>
+            </form>
+            <script>
+                function mpMain() {
+                    window.location.href = 'http://localhost:1323/main';
+                }
+
+                function submitJson() {
+                    var name = document.getElementById('name').value;
+                    var message = document.getElementById('message').value;
+
+                    // nameとmessageが空かどうかチェック
+                    if (!name.trim() || !message.trim()) {
+                        alert("nameとmessageは必須です");
+                        return;
+                    }
+
+                    fetch('http://localhost:1323/api/new', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+
+                        // データを文字列化
+                        body: JSON.stringify({
+                            name: name,
+                            message: message
+                        })
+                    }).then(response => response.json())
+
+                    // 成功の場合、レスポンスをコンソールに出力
+                    .then(data => {
+                        console.log(data)
+                        alert("メッセージの送信が完了しました")
+                    })
+
+                    // エラーの場合、エラーをコンソールに出力
+                    .catch((error) => {
+                        alert("メッセージの送信に失敗しました")
+                    })
+                }
+            </script>
+        </body>
+    </blockquote>
+{{end}}
